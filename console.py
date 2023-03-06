@@ -112,7 +112,7 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
-
+    
     def do_create(self, arg):
         """Creates a new instance of a class and saves it (to the JSON file)
         Usage: create <class name>"""
@@ -340,4 +340,5 @@ class HBNBCommand(cmd.Cmd):
         print("Usage: update <className> <id> <attName> <attVal>\n")
 
 if __name__ == "__main__":
+
     HBNBCommand().cmdloop()
