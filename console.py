@@ -114,37 +114,36 @@ class HBNBCommand(cmd.Cmd):
         pass
 
     def do_create(self, arg):
-        """Creates a new instance of a class"""
-        params = arg.split()
-        if len(params) < 1:
+        """Creates a new instance of a class and saves it (to the JSON file)
+        Usage: create <class name>"""
+        if not arg:
             print("** class name missing **")
             return
-        class_name = params[0]
-        if class_name not in self.classes:
+        args = arg.split()
+        if args[0] not in self.classes:
             print("** class doesn't exist **")
             return
-        args = {}
-        for param in params[1:]:
-            if '=' not in param:
+        new_instance = self.classes[args[0]]()
+        for i in range(1, len(args)):
+            if "=" not in args[i]:
                 continue
-            key, value = param.split('=', 1)
-            if len(value) == 0:
+            att_name, value = args[i].split("=", 1)
+            if not value:
                 continue
             if value[0] == '"' and value[-1] == '"' and len(value) > 1:
-                value = value[1:-1].replace('_', ' ').replace('\\"', '"')
-                args[key] = value
+                value = value[1:-1].replace("_", " ").replace('"', '\\"')
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
             else:
                 try:
                     value = int(value)
                 except ValueError:
-                    try:
-                        value = float(value)
-                    except ValueError:
-                        continue
-                args[key] = value
-        instance = self.classes[class_name](**args)
-        self.save_to_json()
-        print(instance.id)
+                    continue
+            setattr(new_instance, att_name, value)
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
