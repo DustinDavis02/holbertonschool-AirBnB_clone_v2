@@ -1,7 +1,5 @@
 #!/usr/bin/python3
-"""
-State Class from Models Module
-"""
+"""State Class from Models Module"""
 
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
@@ -9,9 +7,7 @@ from sqlalchemy.orm import relationship
 
 
 class State(BaseModel, Base):
-    """
-    State class handles all application states
-    """
+    """State class handles all application states"""
     __tablename__ = 'states'
     name = Column(String(128), nullable=False)
     
@@ -23,9 +19,7 @@ class State(BaseModel, Base):
     if models.storage_type == 'file':
         @property
         def cities(self):
-            """
-            Returns a list of City instances with state_id equals to the current State.id
-            """
+            """Returns a list of City instances with state_id equals to the current State.id"""
             from models.city import City
             city_list = []
             for city in models.storage.all(City).values():
