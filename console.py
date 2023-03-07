@@ -115,23 +115,35 @@ class HBNBCommand(cmd.Cmd):
     
     def do_create(self, arg):
         """Creates a new instance of a class and saves it (to the JSON file)
-        Usage: create <class name>"""
-        args = args.split(" ")
-        if not args:
+            Usage: create <class name>"""
+        if not arg:
             print("** class name missing **")
             return
-        elif args[0] not in HBNBCommand.classes:
+        args = arg.split()
+        if args[0] not in self.classes:
             print("** class doesn't exist **")
             return
-
-        new_instance = HBNBCommand.classes[args[0]]()
+        new_instance = self.classes[args[0]]()
         for i in range(1, len(args)):
-            part = args[i].partition('=')
-            new_instance.__dict__.update({part[0].replace('"', ''): part[2].replace('"', '').replace('_', ' ')})
-
-        storage.save()
+            if "=" not in args[i]:
+                continue
+            att_name, value = args[i].split("=", 1)
+            if not value:
+                continue
+            if value[0] == '"' and value[-1] == '"' and len(value) > 1:
+                value = value[1:-1].replace("_", " ").replace('"', '\\"')
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
+            else:
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            setattr(new_instance, att_name, value)
         print(new_instance.id)
-        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
