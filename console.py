@@ -113,29 +113,36 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
     
-    def do_create(self, args):
+    def do_create(self, arg):
         """Creates a new instance of a class and saves it (to the JSON file)
         Usage: create <class name>"""
-        if not args:
+        if not arg:
             print("** class name missing **")
             return
-        elif args.split()[0] not in HBNBCommand.classes:
+        args = arg.split()
+        if args[0] not in self.classes:
             print("** class doesn't exist **")
             return
-        new_instance = HBNBCommand.classes[args.split()[0]]()
-        for arg in args.split()[1:]:
-            key_value = arg.partition("=")
-            key = key_value[0]
-            value = key_value[2]
-            if value[0] == '"' and value[-1] == '"':
-                value = value[1:-1].replace('_', ' ')
-            elif '.' in value:
-                value = float(value)
+        new_instance = self.classes[args[0]]()
+        for i in range(1, len(args)):
+            if "=" not in args[i]:
+                continue
+            att_name, value = args[i].split("=", 1)
+            if not value:
+                continue
+            if value[0] == '"' and value[-1] == '"' and len(value) > 1:
+                value = value[1:-1].replace("_", " ").replace('"', '\\"')
+            elif "." in value:
+                try:
+                    value = float(value)
+                except ValueError:
+                    continue
             else:
-                value = int(value)
-            setattr(new_instance, key, value)
-        storage.new(new_instance)
-        storage.save()
+                try:
+                    value = int(value)
+                except ValueError:
+                    continue
+            setattr(new_instance, att_name, value)
         print(new_instance.id)
 
     def help_create(self):
