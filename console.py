@@ -122,14 +122,11 @@ class HBNBCommand(cmd.Cmd):
         elif args.split()[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-
         new_instance = HBNBCommand.classes[args.split()[0]]()
-
         for arg in args.split()[1:]:
             key_value = arg.partition("=")
             key = key_value[0]
             value = key_value[2]
-
             if value[0] == '"' and value[-1] == '"':
                 value = value[1:-1].replace('_', ' ')
             elif '.' in value:
@@ -137,10 +134,8 @@ class HBNBCommand(cmd.Cmd):
             else:
                 value = int(value)
             setattr(new_instance, key, value)
-
         storage.new(new_instance)
         storage.save()
-
         print(new_instance.id)
 
     def help_create(self):
