@@ -116,34 +116,22 @@ class HBNBCommand(cmd.Cmd):
     def do_create(self, arg):
         """Creates a new instance of a class and saves it (to the JSON file)
         Usage: create <class name>"""
-        if not arg:
+        args = args.split(" ")
+        if not args:
             print("** class name missing **")
             return
-        args = arg.split()
-        if args[0] not in self.classes:
+        elif args[0] not in HBNBCommand.classes:
             print("** class doesn't exist **")
             return
-        new_instance = self.classes[args[0]]()
+
+        new_instance = HBNBCommand.classes[args[0]]()
         for i in range(1, len(args)):
-            if "=" not in args[i]:
-                continue
-            att_name, value = args[i].split("=", 1)
-            if not value:
-                continue
-            if value[0] == '"' and value[-1] == '"' and len(value) > 1:
-                value = value[1:-1].replace("_", " ").replace('"', '\\"')
-            elif "." in value:
-                try:
-                    value = float(value)
-                except ValueError:
-                    continue
-            else:
-                try:
-                    value = int(value)
-                except ValueError:
-                    continue
-            setattr(new_instance, att_name, value)
+            part = args[i].partition('=')
+            new_instance.__dict__.update({part[0].replace('"', ''): part[2].replace('"', '').replace('_', ' ')})
+
+        storage.save()
         print(new_instance.id)
+        storage.save()
 
     def help_create(self):
         """ Help information for the create method """
@@ -174,7 +162,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage._FileStorage__objects[key])
+            print(storage.all())
         except KeyError:
             print("** no instance found **")
 
@@ -225,11 +213,11 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all():
                 print_list.append(str(v))
 
         print(print_list)
@@ -312,7 +300,7 @@ class HBNBCommand(cmd.Cmd):
             args = [att_name, att_val]
 
         # retrieve dictionary of current objects
-        new_dict = storage.all()[key]
+        new_dict = storage.all()
 
         # iterate through attr names and values
         for i, att_name in enumerate(args):
