@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-"""This module defines a class to manage file storage for hbnb clone"""
 import json
 
 
@@ -51,11 +49,11 @@ class FileStorage:
                     self.__objects[key] = classes[val['__class__']](**val)
         except FileNotFoundError:
             pass
-        
+
     def delete(self, obj=None):
-        """Deletes obj from __objects if it is inside"""
+        """Deletes obj from __objects if it exists"""
         if obj is not None:
-            key = type(obj).__name__ + '.' + obj.id
+            key = obj.__class__.__name__ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
-                self.save()
+                self.save
