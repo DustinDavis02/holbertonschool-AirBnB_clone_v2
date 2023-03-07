@@ -114,55 +114,36 @@ class HBNBCommand(cmd.Cmd):
         pass
     
     def do_create(self, arg):
-        """Creates a new instance of a class with given parameters"""
-        args = arg.split()
-
-        if len(args) < 2:
-            print("Usage: create <Class name> <param 1> <param 2> <param 3>...")
+        """Creates a new instance of a class and saves it (to the JSON file)
+            Usage: create <class name>"""
+        if not arg:
+            print("** class name missing **")
             return
-
-        class_name = args[0]
-        params = {}
-
-        for param in args[1:]:
-            try:
-                key, value = param.split('=')
-            except ValueError:
-            # Skip parameters that don't match the key=value format
+        args = arg.split()
+        if args[0] not in self.classes:
+            print("** class doesn't exist **")
+            return
+        new_instance = self.classes[args[0]]()
+        for i in range(1, len(args)):
+            if "=" not in args[i]:
                 continue
-
-        # Parse string values that are enclosed in double quotes
-            if value.startswith('"'):
-            # Remove the quotes and replace underscores with spaces
-                value = value[1:-1].replace('_', ' ')
-            # Unescape any double quotes inside the value
-                value = value.replace('\\"', '"')
-        # Parse float values
-            elif '.' in value:
+            att_name, value = args[i].split("=", 1)
+            if not value:
+                continue
+            if value[0] == '"' and value[-1] == '"' and len(value) > 1:
+                value = value[1:-1].replace("_", " ").replace('"', '\\"')
+            elif "." in value:
                 try:
                     value = float(value)
                 except ValueError:
-                # Skip parameters that can't be parsed as floats
                     continue
-        # Parse integer values
             else:
                 try:
                     value = int(value)
                 except ValueError:
-                # Skip parameters that can't be parsed as integers
                     continue
-
-            params[key] = value
-
-    # Get the class object based on the class name
-        cls = getattr(sys.modules[__name__], class_name)
-
-    # Create a new instance of the class with the given parameters
-        try:
-            instance = cls(**params)
-            print("Created instance of", class_name, "with parameters:", params)
-        except TypeError:
-            print("Error: Invalid parameters for", class_name)
+            setattr(new_instance, att_name, value)
+        print(new_instance.id)
 
     def help_create(self):
         """ Help information for the create method """
