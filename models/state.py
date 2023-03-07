@@ -1,30 +1,26 @@
 #!/usr/bin/python3
-"""State Class from Models Module"""
-
-from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String
+""" State Module for HBNB project """
 from sqlalchemy.orm import relationship
+from models.base_model import BaseModel, Base
+from models.city import City
+from sqlalchemy import Column, String
 
 
 class State(BaseModel, Base):
-    """State class handles all application states"""
-    __tablename__ = 'states'
+    """ State class """
+    __tablename__ = "states"
     name = Column(String(128), nullable=False)
     
-    # For DBStorage
-    if models.storage_type == 'db':
-        cities = relationship('City', backref='state', cascade='all, delete-orphan')
-    
-    # For FileStorage
-    if models.storage_type == 'file':
+    if models.storage_t == 'db':
+        cities = relationship('City', cascade='all, delete', backref='state')
+    else:
         @property
         def cities(self):
-            """Returns a list of City instances with state_id equals to the current State.id"""
-            from models.city import City
-            city_list = []
-            for city in models.storage.all(City).values():
+            """Getter attribute cities that returns the list of City
+            instances with state_id equals to the current State.id"""
+            cities_list = []
+            cities = models.storage.all(City)
+            for city in cities.values():
                 if city.state_id == self.id:
-                    city_list.append(city)
-            return city_list
-
-
+                    cities_list.append(city)
+            return cities_list
