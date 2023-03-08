@@ -70,6 +70,7 @@ class Place(BaseModel, Base):
         def amenities(self, amenity_list):
             """setter"""
             from models.amenity import Amenity
+            self.amenities = []
             for x in amenity_list:
                 if type(x) == Amenity:
                     self.amenity_ids.append(x)
