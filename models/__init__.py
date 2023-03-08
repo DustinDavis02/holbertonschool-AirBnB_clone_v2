@@ -2,7 +2,6 @@
 """This module instantiates an object of class depending on the value of HBNB_TYPE_STORAGE"""
 import os
 
-
 storage = None
 if(os.getenv('HBNB_TYPE_STORAGE') == 'db'):
     from models.engine.db_storage import DBStorage
