@@ -72,7 +72,7 @@ class HBNBCommand(cmd.Cmd):
                 pline = pline[2].strip()  # pline is now str
                 if pline:
                     # check for *args or **kwargs
-                    if pline[0] == '{' and pline[-1] =='}'\
+                    if pline[0] == '{' and pline[-1] == '}'\
                             and type(eval(pline)) is dict:
                         _args = pline
                     else:
@@ -280,7 +280,7 @@ class HBNBCommand(cmd.Cmd):
             args = args.partition(' ')
 
             # if att_name was not quoted arg
-            if not att_name and args[0] == ' ':
+            if not att_name and args[0] != ' ':
                 att_name = args[0]
             # check for quoted val arg
             if args[2] and args[2][0] == '\"':
@@ -319,6 +319,23 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+
+    def get_value(input_str):
+        """attempts to turn a string to number"""
+        num = None
+        try:
+            num = float(input_str)          # if float fails num will be None
+            res = int(input_str)
+        except ValueError:
+            res = num or str(input_str)     # if int failed, num won't be None,
+        if type(res) is str:
+            if (res[0] != res[-1] or res[0] != '"'):
+                raise TypeError('Not Implmented')
+            res = res.replace("_", ' ')
+            res = res.strip('"')
+
+        return res
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
