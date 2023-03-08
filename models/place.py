@@ -1,12 +1,10 @@
 #!/usr/bin/python3
 """This module defines a class Place"""
-import shlex
-from sqlalchemy.ext.declarative import declarative_base
-from os import getenv
-import models
 from models.base_model import BaseModel, Base
+from sqlalchemy import Column, String, ForeignKey, Integer, Float, Table
 from sqlalchemy.orm import relationship
-from sqlalchemy import Column, Integer, String, Float, ForeignKey
+from os import getenv
+from models.review import Review
 
 
 class Place(BaseModel, Base):
