@@ -1,19 +1,23 @@
+#!/usr/bin/python3
+"""Starts a Flask web application"""
+
 from flask import Flask, render_template
-from models import storage, State, session
-
+from models import storage, State
 app = Flask(__name__)
-app.secret_key = 'my_secret_key'
 
-@app.route('/states_list', strict_slashes=False)
-def states_list():
-    states = storage.all(State).values()
-    sorted_states = sorted(states, key=lambda state: state.name)
-    session.remove()
-    return render_template('states_list.html', states=sorted_states)
 
 @app.teardown_appcontext
-def close_storage(error):
+def teardown_session(exception):
+    """Closes the storage session after each request"""
     storage.close()
+
+
+@app.route('/states_list', strict_slashes=False)
+def display_states_list():
+    """Displays a list of all State objects present in the DBStorage sorted by name"""
+    states = sorted(storage.all(State).values(), key=lambda x: x.name)
+    return render_template('7-states_list.html', states=states)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
