@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """This script starts a Flask web application and defines the following routes:
-- "/" : display "Hello HBNB!""""
+- "/" : display "Hello HBNB!"""
 from flask import Flask
 
 app = Flask(__name__)
