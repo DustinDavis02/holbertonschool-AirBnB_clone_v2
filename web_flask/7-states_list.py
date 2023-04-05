@@ -1,23 +1,25 @@
 #!/usr/bin/python3
 """Starts a Flask web application"""
-from flask import Flask, render_template
-from models import storage
+from flask import Flask, request, render_template
 from markupsafe import escape
+from models import storage
 
 app = Flask(__name__)
 
 
-
 @app.route('/states_list', strict_slashes=False)
-def display_states_list():
-    """Displays a list of all State objects present in the DBStorage sorted by name"""
+def list_states():
+    """List the states"""
     states = storage.all('State')
+
     return render_template('7-states_list.html', states=states)
 
+
 @app.teardown_appcontext
-def teardown_session(args):
-    """Closes the storage session after each request"""
+def teardown(args):
+    """Remove current SQL Alchemy session"""
     storage.close()
 
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port='5000')
