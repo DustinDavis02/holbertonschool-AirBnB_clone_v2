@@ -2,8 +2,8 @@
 """This script starts a Flask web application and defines the following routes:
 - "/" : display "Hello HBNB!"
 - "/hbnb" : display "HBNB"
-- "/c/<text>" : display "C <text>" where <text> is the value of the text variable
-  with underscores replaced with spaces"""
+- "/c/<text>" : display "C <text>" where <text> is the value of the text
+variable with underscores replaced with spaces"""
 from flask import Flask
 
 app = Flask(__name__)
@@ -23,7 +23,8 @@ def hbnb():
 
 @app.route('/c/<text>', strict_slashes=False)
 def c_text(text):
-    """Displays "C <text>" when the "/c/<text>" URL is requested, where <text>is the value of the text variable with underscores replaced with spaces."""
+    """Displays "C <text>" when the "/c/<text>" URL is requested, where <text>
+    is the value of the text variable with underscores replaced with spaces."""
     return "C {}".format(text.replace("_", " "))
 
 
